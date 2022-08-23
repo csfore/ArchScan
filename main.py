@@ -3,10 +3,6 @@ from bs4 import BeautifulSoup
 import subprocess
 
 
-
-lent = 0
-
-
 # Making the function to send notifications via system subprocesses
 def notify(solved, unresolved, hits):
     message = f"Arch Packages update:\n{solved} solved\n{unresolved} open\nYou had {hits} hits"
@@ -37,6 +33,7 @@ rawTrimmed = raw[6:]
 
 # Taking out the date hyperlinks and keeping just the topic names
 packages = []
+lent = 0
 while lent < len(rawTrimmed):
     packages.append(rawTrimmed[lent])
     lent += 2
