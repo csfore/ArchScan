@@ -42,4 +42,29 @@ for entry in packages:
 
 unsolved = len(packages) - solvedCounter
 
-notify(solvedCounter, unsolved)
+# listPackages = subprocess.Popen(("pacman", "-Qet"), stdout=subprocess.PIPE)
+# awkPackages = subprocess.check_output(("awk", "{print $1}"), stdin=listPackages.stdout)
+# output = listPackages.communicate()[0]
+#
+# print(output)
+
+output = subprocess.check_output("pacman -Qet | awk '{print $1}'", shell=True)
+
+#print(output.decode().splitlines())
+#notify(solvedCounter, unsolved)
+
+installedPackages = output.decode().splitlines()
+
+arr = ["abc", "a", "123"]
+
+ar = ["pack", "pac", "p"]
+
+# for x in arr:
+#     for y in ar:
+#         if x in y:
+#             print(f"{x}, {y}")
+
+for package in installedPackages:
+    for issues in packages:
+        if package in issues:
+            print(f"Package {package} showed up in issue {issues}")
