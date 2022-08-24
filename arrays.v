@@ -5,22 +5,23 @@ fn packages_array() []string {
 
 	// Adding the right packages to check for to an array
 	mut len := 0
-	mut packages_issues := []string{}
+	mut issues := []string{}
 	for len < titles.len {
-		packages_issues << titles[len]
+		issues << titles[len]
 		len += 2
 	}
-	return packages_issues
+	return issues
 }
 
 fn links_array() []string {
 	links := scrape_links()
+	
 	// Adding the right links to check for to an array
 	mut len := 0
-	mut links_issues := []string{}
+	mut issues := []string{}
 	for len < links.len {
-		links_issues << links[len]
+		issues << links[len]
 		len += 2
 	}
-	return links_issues
+	return issues
 }

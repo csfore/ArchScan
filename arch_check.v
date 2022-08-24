@@ -1,16 +1,9 @@
 module main
 
-import net.http
-import net.html
 import os
 
 fn main() {
-	links := scrape_links()
-	titles := scrape_packages()
-	packages_installed := get_installed()
 	packages_issues := packages_array()
-	links_issues := links_array()
-	package_map := create_map()
 	issue_amount := get_issues()
 
 	solved_amount := calculate_solved()
@@ -21,10 +14,9 @@ fn main() {
 	notify(solved_amount, unsolved_amount, issue_amount)
 }
 
-
-fn notify(solved int, unresolved int, hits int)  {
-	message := 'Arch Packages update:\n${solved} solved\n${unresolved} open\nYou had ${hits} hits'
-	os.execute('notify-send "ArchScan Alert" "${message}"')
+fn notify(solved int, unresolved int, hits int) {
+	message := 'Arch Packages update:\n$solved solved\n$unresolved open\nYou had $hits hits'
+	os.execute('notify-send "ArchScan Alert" "$message"')
 }
 
 fn get_installed() []string {
@@ -55,11 +47,10 @@ fn get_issues() int {
 
 	// Getting the amount of issues detected in the installed packages
 	mut issue_amount := 0
-	mut len := 0
 	for package in packages_installed {
 		for issue in packages_issues {
 			if issue.contains(package) {
-				println("\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}")
+				println('\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}')
 				issue_amount += 1
 			}
 		}
