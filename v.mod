@@ -1,5 +1,5 @@
 Module {
-	name: 'ArchCheck'
+	name: 'arch_check'
 	description: ''
 	version: ''
 	license: ''
