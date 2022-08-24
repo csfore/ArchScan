@@ -15,7 +15,7 @@ fn packages_array() []string {
 
 fn links_array() []string {
 	links := scrape_links()
-	
+
 	// Adding the right links to check for to an array
 	mut len := 0
 	mut issues := []string{}
