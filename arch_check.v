@@ -5,89 +5,62 @@ import net.html
 import os
 
 fn main() {
-	page := http.get_text("https://bbs.archlinux.org/viewforum.php?id=44")
-	//println("${page}")
-	
-	doc := html.parse('${page}')
-	//println("${doc}")
+	links := scrape_links()
+	titles := scrape_packages()
+	packages_installed := get_installed()
+	packages_issues := packages_array()
+	links_issues := links_array()
+	package_map := create_map()
 
-	links_tag := doc.get_tag('a')
-	mut links := []string{}
-	for entry in links_tag {
-		links << entry.attributes['href']
-	}
-
-	packages_tag := doc.get_tag('td')
-	mut titles := []string{}
-	for entry in packages_tag {
-		tag_array := entry.get_tags('a')
-		for tags in tag_array {
-			titles << tags.content
-		}
-		
-	}
-	
-	// Trimming the stickied titles
-	titles.delete_many(0, 6)
-	
-	// Trimming the extra links
-	links.trim(83)
-	links.delete_many(0, 28)
-
+	// Getting the amount of issues detected in the installed packages
+	mut issue_amount := 0
 	mut len := 0
-	mut packages_issues := []string{}
-	for len < titles.len {
-		packages_issues << titles[len]
-		len += 2
+	for package in packages_installed {
+		for issue in packages_issues {
+			if issue.contains(package) {
+				println("\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}")
+				issue_amount += 1
+			}
+		}
 	}
 
-	len = 0
-	mut links_issues := []string{}
-	for len < links.len {
-		links_issues << links[len]
-		len += 2
-	}
-
-	// println(packages_issues)
-	// println(links_issues)
-
+	// Checking to see how many posts have '[SOLVED]' in the title
 	mut solved_amount := 0
-	mut unsolved_amount := 0
-	raw_packages := os.execute("pacman -Q | awk '{print $1}'").output
-	
-	mut packages_installed := raw_packages.split_into_lines()
+	for package in packages_issues {
+		if package.contains('[SOLVED]') == true {
+			solved_amount += 1
+		}
+	}
+	// Simple math to figure out the amount without '[SOLVED]' in the title
+	unsolved_amount := packages_issues.len - solved_amount
 
-	len = 0
+	// Sending the notification
+	notify(solved_amount, unsolved_amount, issue_amount)
+}
+
+
+fn notify(solved int, unresolved int, hits int)  {
+	message := 'Arch Packages update:\n${solved} solved\n${unresolved} open\nYou had ${hits} hits'
+	os.execute('notify-send "ArchScan Alert" "${message}"')
+}
+
+fn get_installed() []string {
+	// Getting the installed packages then putting it into a format suitable for arrays
+	raw_packages := os.execute("pacman -Q | awk '{print $1}'").output
+	packages := raw_packages.split_into_lines()
+	return packages
+}
+
+fn create_map() map[string]string {
+	packages_issues := packages_array()
+	links_issues := links_array()
+
+	// Added the packages/links to a map for easier access
+	mut len := 0
 	mut package_map := map[string]string{}
 	for package in packages_issues {
 		package_map[package] = 'https://bbs.archlinux.org/${links_issues[len]}'
 		len += 1
 	}
-
-	mut issues := 0
-	len = 0
-	for package in packages_installed {
-		//len += 1
-		for issue in packages_issues {
-			if issue.contains(package) {
-				println("\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}")
-				issues += 1
-			}
-		}
-	}
-
-	mut solved := 0
-	for package in packages_issues {
-		if package.contains('[SOLVED]') == true {
-			solved += 1
-		}
-	}
-	unsolved := packages_issues.len - solved
-	notify(solved, unsolved, issues)
-}
-
-
-fn notify(solved int, unresolved int, hits int) {
-	message := 'Arch Packages update:\n${solved} solved\n${unresolved} open\nYou had ${hits} hits'
-	os.execute('notify-send "ArchScan Alert" "${message}"')
+	return package_map
 }
