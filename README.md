@@ -11,7 +11,12 @@ Please do not rely on this for production environments, it still has false flags
 
 ## Roadmap
 
-- [ ] - Todo test
+- [x] - Enable notification support
+- [x] - Show issues resolved, unresolved, and ones that matched installed packages
+- [ ] - Tidying up and splitting the files up as needed
+- [ ] - Enable a cron/init task that checks for you
+- [ ] - Add a CLI interface that shows more details
+- [ ] - Other Package Managers?
 
 ## Contact
 
