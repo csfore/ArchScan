@@ -11,26 +11,9 @@ fn main() {
 	packages_issues := packages_array()
 	links_issues := links_array()
 	package_map := create_map()
+	issue_amount := get_issues()
 
-	// Getting the amount of issues detected in the installed packages
-	mut issue_amount := 0
-	mut len := 0
-	for package in packages_installed {
-		for issue in packages_issues {
-			if issue.contains(package) {
-				println("\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}")
-				issue_amount += 1
-			}
-		}
-	}
-
-	// Checking to see how many posts have '[SOLVED]' in the title
-	mut solved_amount := 0
-	for package in packages_issues {
-		if package.contains('[SOLVED]') == true {
-			solved_amount += 1
-		}
-	}
+	solved_amount := calculate_solved()
 	// Simple math to figure out the amount without '[SOLVED]' in the title
 	unsolved_amount := packages_issues.len - solved_amount
 
@@ -63,4 +46,35 @@ fn create_map() map[string]string {
 		len += 1
 	}
 	return package_map
+}
+
+fn get_issues() int {
+	packages_installed := get_installed()
+	packages_issues := packages_array()
+	package_map := create_map()
+
+	// Getting the amount of issues detected in the installed packages
+	mut issue_amount := 0
+	mut len := 0
+	for package in packages_installed {
+		for issue in packages_issues {
+			if issue.contains(package) {
+				println("\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}")
+				issue_amount += 1
+			}
+		}
+	}
+	return issue_amount
+}
+
+fn calculate_solved() int {
+	packages_issues := packages_array()
+	// Checking to see how many posts have '[SOLVED]' in the title
+	mut amount := 0
+	for package in packages_issues {
+		if package.contains('[SOLVED]') == true {
+			amount += 1
+		}
+	}
+	return amount
 }
