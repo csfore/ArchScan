@@ -70,11 +70,20 @@ fn main() {
 		//len += 1
 		for issue in packages_issues {
 			if issue.contains(package) {
-				println("Potential issue with $package\nLink: ${package_map[issue]}")
+				println("\nPotential issue with \e[0;34m$package \e[0m\nLink: ${package_map[issue]}")
 				issues += 1
 			}
 		}
 	}
+
+	mut solved := 0
+	for package in packages_issues {
+		if package.contains('[SOLVED]') == true {
+			solved += 1
+		}
+	}
+	unsolved := packages_issues.len - solved
+	notify(solved, unsolved, issues)
 }
 
 
