@@ -13,7 +13,8 @@ Please do not rely on this for production environments, it still has false flags
 
 - [x] - Enable notification support
 - [x] - Show issues resolved, unresolved, and ones that matched installed packages
-- [ ] - Tidying up and splitting the files up as needed
+- [x] - Tidying up and splitting the files up as needed
+- [ ] - Add unit tests
 - [ ] - Enable a cron/init task that checks for you
 - [ ] - Add a CLI interface that shows more details
 - [ ] - Other Package Managers?
